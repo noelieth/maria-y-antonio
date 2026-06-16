@@ -319,7 +319,9 @@
             audioWasSetup = true;
         }
 
-        window.addEventListener('pointermove', setupAutoplay);
+        window.addEventListener('click', setupAutoplay);
+        window.addEventListener('keyup', setupAutoplay);
+        window.addEventListener('touchend', setupAutoplay);
     });
   </script>
 </body>
