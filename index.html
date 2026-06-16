@@ -51,11 +51,10 @@
                 <div class="col col-xs-12">
                     <h4 align="center">SABEMOS LO QUE ES EL AMOR PORQUE LO APRENDIMOS JUNTOS.</h4>
                     <img src="assets/images/nos-casamos.png" alt="" style="display: block;margin: auto;">
-                    <audio autoplay allow="autoplay">
+                    <audio id="autoplay-music" autoplay allow="autoplay">
                      <source src="assets/images/Alex-Warren-Ordinary.mp3" type="audio/mp3">
                         Tu navegador no soporta el elemento de audio.
                     </audio>
-
                 </div>
             </div>
         </div>
@@ -264,7 +263,15 @@
         </section>        
           
     </div>
-   
+     <footer style="background-color:#fcf5e5;">
+
+    <p style="text-align: center;">
+      Contactanos: <br>
+      María +34641417992 <br>
+      Antonio +34641417992
+    </p>
+
+  </footer>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/modernizr.custom.js"></script>
@@ -293,6 +300,28 @@
 
     },1000);
 
+  </script>
+  <script>
+    // When the page has loaded, this code runs. I recommend always putting
+    // your scripts inside a DOMContentLoaded block like this, so any
+    // variables you declare (such as `audioWasSetup` here) don't leak out
+    // into the global scope (keeps all your scripts neatly isolated! When
+    // you have a lot of scripts and all their variables are global they
+    // sometimes cause you headaches later).
+    document.addEventListener('DOMContentLoaded', () => {
+        let audioWasSetup = false;
+        function setupAutoplay() {
+            if (audioWasSetup) return;
+
+            const $audio = document.querySelector("#autoplay-music");
+            $audio.play();
+
+            audioWasSetup = true;
+        }
+
+        window.addEventListener('click', setupAutoplay);
+        window.addEventListener('keyup', setupAutoplay);
+    });
   </script>
 </body>
 
