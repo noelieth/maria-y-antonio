@@ -310,18 +310,38 @@
     // sometimes cause you headaches later).
     document.addEventListener('DOMContentLoaded', () => {
         let audioWasSetup = false;
+
         function setupAutoplay() {
             if (audioWasSetup) return;
 
-            const $audio = document.querySelector("#autoplay-music");
-            $audio.play();
-
-            audioWasSetup = true;
+            // Check if the scroll event triggered this, and ensure the user actually scrolled
+            if (window.pageYOffset > 0) {
+                const $audio = document.querySelector("#autoplay-music");
+                if ($audio) {
+                    $audio.play().catch(error => {
+                        console.log("Autoplay prevented by browser policy:", error);
+                    });
+                }
+                audioWasSetup = true;
+                
+                // Clean up the scroll listener specifically since we no longer need it
+                window.removeEventListener('scroll', setupAutoplay);
+            } else if (event && event.type !== 'scroll') {
+                // If it's a click, keyup, or touchend, play immediately
+                const $audio = document.querySelector("#autoplay-music");
+                if ($audio) {
+                    $audio.play().catch(error => {
+                        console.log("Autoplay prevented by browser policy:", error);
+                    });
+                }
+                audioWasSetup = true;
+            }
         }
 
-      
-        window.addEventListener('touchmove', setupAutoplay);
-        window.addEventListener('scroll', setupAutoplay);
+        window.addEventListener('click', setupAutoplay);
+        window.addEventListener('keyup', setupAutoplay);
+        window.addEventListener('touchend', setupAutoplay);
+        window.addEventListener('scroll', setupAutoplay); // Registered scroll handler
     });
   </script>
 </body>
