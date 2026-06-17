@@ -263,15 +263,6 @@
         </section>        
           
     </div>
-     <footer style="background-color:#fcf5e5;">
-
-    <p style="text-align: center;">
-      Contactanos: <br>
-      María +34641417992 <br>
-      Antonio +34641417992
-    </p>
-
-  </footer>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/modernizr.custom.js"></script>
@@ -314,33 +305,30 @@
     function setupAutoplay() {
         if (audioWasSetup) return;
 
-        // Check window.pageYOffset to ensure the user has actually scrolled down
+        // Check if the user has actually scrolled down the page
         if (window.pageYOffset > 0) {
             const $audio = document.querySelector("#autoplay-music");
             
             if ($audio) {
                 $audio.play()
                     .then(() => {
+                        // Success! Audio is playing, so clean up all listeners
                         audioWasSetup = true;
-                        removeScrollListeners(); // Clean up listeners once successful
+                        window.removeEventListener('touchend', setupAutoplay);
+                        window.removeEventListener('scroll', setupAutoplay);
                     })
                     .catch(error => {
-                        console.log("Autoplay blocked by mobile browser policy:", error);
+                        console.log("Playback failed. Interaction still required:", error);
                     });
             }
         }
     }
 
-    // Helper function to clean up all scroll-related listeners
-    function removeScrollListeners() {
-        window.removeEventListener('scroll', setupAutoplay);
-        window.removeEventListener('touchmove', setupAutoplay);
-    }
-
-    // Listeners for both traditional scrolling and mobile touch scrolling
-    window.addEventListener('scroll', setupAutoplay);
-    window.addEventListener('touchmove', setupAutoplay);
+    // 'touchend' fires right when they lift their finger after a scroll
     window.addEventListener('touchend', setupAutoplay);
+    
+    // Keep standard scroll as a backup for desktop devices
+    window.addEventListener('scroll', setupAutoplay); 
 });
   </script>
 </body>
