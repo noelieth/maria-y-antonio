@@ -309,40 +309,39 @@
     // you have a lot of scripts and all their variables are global they
     // sometimes cause you headaches later).
     document.addEventListener('DOMContentLoaded', () => {
-        let audioWasSetup = false;
+    let audioWasSetup = false;
 
-        function setupAutoplay() {
-            if (audioWasSetup) return;
+    function setupAutoplay() {
+        if (audioWasSetup) return;
 
-            // Check if the scroll event triggered this, and ensure the user actually scrolled
-            if (window.pageYOffset > 0) {
-                const $audio = document.querySelector("#autoplay-music");
-                if ($audio) {
-                    $audio.play().catch(error => {
-                        console.log("Autoplay prevented by browser policy:", error);
+        // Check window.pageYOffset to ensure the user has actually scrolled down
+        if (window.pageYOffset > 0) {
+            const $audio = document.querySelector("#autoplay-music");
+            
+            if ($audio) {
+                $audio.play()
+                    .then(() => {
+                        audioWasSetup = true;
+                        removeScrollListeners(); // Clean up listeners once successful
+                    })
+                    .catch(error => {
+                        console.log("Autoplay blocked by mobile browser policy:", error);
                     });
-                }
-                audioWasSetup = true;
-                
-                // Clean up the scroll listener specifically since we no longer need it
-                window.removeEventListener('scroll', setupAutoplay);
-            } else if (event && event.type !== 'scroll') {
-                // If it's a click, keyup, or touchend, play immediately
-                const $audio = document.querySelector("#autoplay-music");
-                if ($audio) {
-                    $audio.play().catch(error => {
-                        console.log("Autoplay prevented by browser policy:", error);
-                    });
-                }
-                audioWasSetup = true;
             }
         }
+    }
 
-        window.addEventListener('click', setupAutoplay);
-        window.addEventListener('keyup', setupAutoplay);
-        window.addEventListener('touchend', setupAutoplay);
-        window.addEventListener('scroll', setupAutoplay); // Registered scroll handler
-    });
+    // Helper function to clean up all scroll-related listeners
+    function removeScrollListeners() {
+        window.removeEventListener('scroll', setupAutoplay);
+        window.removeEventListener('touchmove', setupAutoplay);
+    }
+
+    // Listeners for both traditional scrolling and mobile touch scrolling
+    window.addEventListener('scroll', setupAutoplay);
+    window.addEventListener('touchmove', setupAutoplay);
+    window.addEventListener('touchend', setupAutoplay);
+});
   </script>
 </body>
 
